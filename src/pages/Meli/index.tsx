@@ -41,12 +41,14 @@ export function Meli() {
       </h2>
       <TestUserComponent
       />
-      <ProductsComponent
-        token={token}
-      />
-      <SitesComponent
-        token={token}
-      />
+      <div className="flex gap-4 mt-4">
+        <ProductsComponent
+          token={token}
+        />
+        <SitesComponent
+          token={token}
+        />
+      </div>
     </div>
   );
 }
