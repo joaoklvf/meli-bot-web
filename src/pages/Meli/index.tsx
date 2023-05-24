@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { getToken } from "../../services/mercado-livre-service";
 import { TestUserComponent } from "./components/TestUserComponent";
 import { SitesComponent } from "./components/SitesComponent";
+import { ProductsComponent } from "./components/ProductsComponent";
 
 
 const handleToken = async (refreshToken: string | null) => {
@@ -38,7 +39,10 @@ export function Meli() {
       <h2 className="text-2xl font-bold">
         <u>Token:</u> {token}
       </h2>
-      <TestUserComponent        
+      <TestUserComponent
+      />
+      <ProductsComponent
+        token={token}
       />
       <SitesComponent
         token={token}

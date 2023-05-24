@@ -1,3 +1,4 @@
+import { PostProduct } from '../pages/Meli/components/ProductsComponent/useProduct';
 import { api } from './api';
 
 export const getToken = async (refreshToken: string) => {
@@ -31,6 +32,19 @@ export const requestSites = async (token: string | null) => {
 
   try {
     const { data } = await api.post('meli/sites', null, { params: { token } });
+    return data;
+  }
+  catch (e: any) {
+    throw new Error(e);
+  }
+}
+
+export const requestProduct = async (product: PostProduct) => {
+  if (!product.token)
+    throw new Error("Token null requestProduct");
+
+  try {
+    const { data } = await api.post('meli/product', product);
     return data;
   }
   catch (e: any) {
