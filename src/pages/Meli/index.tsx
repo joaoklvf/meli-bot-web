@@ -41,7 +41,7 @@ export function Meli() {
       </h2>
       <TestUserComponent
       />
-      <div className="flex gap-4 mt-4">
+      <div className="flex gap-4 mt-4 flex-col">
         <ProductsComponent
           token={token}
         />
