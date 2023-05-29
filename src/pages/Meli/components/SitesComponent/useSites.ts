@@ -5,13 +5,13 @@ interface UseSiteProps {
   token: string | null;
 }
 
-const getSites = async (token: string, setSites: Dispatch<SetStateAction<string>>) => {
+const getSites = async (token: string, setSites: Dispatch<SetStateAction<string[]>>) => {
   const sites = await requestSites(token);
   setSites(sites);
 }
 
 export const useSites = ({ token }: UseSiteProps) => {
-  const [sites, setSites] = useState('');
+  const [sites, setSites] = useState<string[]>([]);
   const handleGetSites = () => {
     token && getSites(token, setSites);
   }
