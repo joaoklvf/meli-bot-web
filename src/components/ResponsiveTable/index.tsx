@@ -19,7 +19,7 @@ export const ResponsiveTable = ({ data }: ResponsiveTableProps) => {
               <tbody>
                 {data.map((x, index) => (
                   <tr key={`${index}${x}`} className="border-b dark:border-neutral-500">
-                    <td className="whitespace-nowrap px-6 py-4 font-medium">{index}</td>
+                    <td className="whitespace-nowrap px-6 py-4 font-medium">{index + 1}</td>
                     {Object.values(x).map(value => (
                       <td key={`${index}${value}`} className="whitespace-nowrap px-6 py-4">{`${value}`}</td>
                     ))}
