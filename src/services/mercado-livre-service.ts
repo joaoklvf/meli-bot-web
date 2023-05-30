@@ -26,12 +26,9 @@ export const getUserTest = async (token: string | null) => {
   }
 }
 
-export const requestSites = async (token: string | null) => {
-  if (!token)
-    throw new Error("Token null getSites");
-
+export const requestSites = async () => {
   try {
-    const { data } = await api.post('meli/sites', null, { params: { token } });
+    const { data } = await api.post('meli/sites', null);
     return data;
   }
   catch (e: any) {

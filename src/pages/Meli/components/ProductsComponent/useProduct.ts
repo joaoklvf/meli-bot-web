@@ -1,14 +1,12 @@
 import { Dispatch, SetStateAction, useState } from "react"
 import { requestProduct } from "../../../../services/mercado-livre-service";
+import { getLocalStorageToken } from "../../../../util/token";
 
 export interface PostProduct {
-  token: string,
+  token: string | null,
   authorName: string,
-  bookTitle: string
-}
-
-interface UseProductProps {
-  token: string
+  bookTitle: string,
+  id: number
 }
 
 const postProduct = async (product: PostProduct, setProduct: Dispatch<SetStateAction<PostProduct>>) => {
@@ -16,12 +14,14 @@ const postProduct = async (product: PostProduct, setProduct: Dispatch<SetStateAc
   setProduct(newProduct);
 }
 
-export const useProduct = ({ token }: UseProductProps) => {
-  const [product, setProduct] = useState<PostProduct>({ authorName: '', bookTitle: '', token: token });
+export const useProduct = () => {
+  const [product, setProduct] = useState<PostProduct>({ id: 0, authorName: '', bookTitle: '', token: '' });
 
   const handlePostProduct = () => {
     if (!product)
       return;
+
+    const token = getLocalStorageToken();
     const newProduct = { ...product, token };
     postProduct(newProduct, setProduct);
   }

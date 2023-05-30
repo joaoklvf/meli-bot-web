@@ -1,14 +1,10 @@
 import { ResponsiveTable } from "../../../../components/ResponsiveTable";
 import { useProduct } from "./useProduct";
 
-interface ProductsComponentProps {
-  token: string;
-}
+export const ProductsComponent = () => {
+  const { product, setProduct, handlePostProduct } = useProduct();
 
-export const ProductsComponent = ({ token }: ProductsComponentProps) => {
-  const { product, setProduct, handlePostProduct } = useProduct({ token });
-
-  return !token ? <></> :
+  return !product ? <></> :
     <div className="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div>
         <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Autor</label>
@@ -20,7 +16,9 @@ export const ProductsComponent = ({ token }: ProductsComponentProps) => {
       </div>
       <button type='button' className='mt-2 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={handlePostProduct}>Enviar produto</button>
       <div className="mt-1 text-white">
-        <ResponsiveTable data={[product]} />
+        {product.id > 0 &&
+          <ResponsiveTable data={[product]} />
+        }
       </div>
     </div>
 }
