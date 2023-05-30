@@ -5,7 +5,9 @@ export const Root = () => {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <main className="container p-4 max-w-full">
+        <Outlet />
+      </main>
     </>
   );
 }

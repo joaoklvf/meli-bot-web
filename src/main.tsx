@@ -5,6 +5,7 @@ import './main.css'
 import { Home } from './pages/Home/index.tsx';
 import { Meli } from './pages/Meli/index.tsx';
 import { Root } from './routes/root.tsx';
+import { MyQuestions } from './pages/Meli/components/MyQuestions/index.tsx';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "meli",
         element: <Meli />,
+      },
+      {
+        path: "questions",
+        element: <MyQuestions />,
       },
     ]
   },

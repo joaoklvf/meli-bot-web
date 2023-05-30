@@ -3,7 +3,7 @@ interface ResponsiveTableProps {
 }
 export const ResponsiveTable = ({ data }: ResponsiveTableProps) => {
   return data.length > 0 ? (
-    <div className="flex flex-col p-8">
+    <div className="flex flex-col p-8 border-slate-700 border rounded-lg">
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
           <div className="overflow-hidden">

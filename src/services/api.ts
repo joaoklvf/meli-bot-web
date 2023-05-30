@@ -3,19 +3,17 @@ import { getLocalStorageRefreshToken, getLocalStorageToken } from "../util/token
 import { getToken } from "./mercado-livre-service";
 
 export const api = axios.create({
-  baseURL: "http://localhost:8080/api/"
+  baseURL: "http://localhost:8080/api/",
+  maxRedirects: 3,
 });
 
-api.interceptors.request.use(config => {
-  const token = getLocalStorageToken();
-  console.log(token, 'newToken')
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`
+api.interceptors.request.use(async (config) => {
+  const localToken = getLocalStorageToken();
+  if (localToken) {
+    const token = JSON.parse(localToken);
+    config.headers['Authorization'] = `Bearer ${token.access_token}`;
   }
-  else {
-    window.location.href = ('https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=4052850536369657&redirect_uri=http://localhost:5173/meli');
-  }
-  // config.headers['Content-Type'] = 'application/json';
+
   return config
 },
   error => {
