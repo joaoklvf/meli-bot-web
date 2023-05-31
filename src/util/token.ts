@@ -7,8 +7,14 @@ export const getLocalStorageToken = () =>
 export const setLocalStorageToken = (token: string) =>
   localStorage.setItem(TOKEN_NAME, token);
 
+export const removeLocalStorageToken = () =>
+  localStorage.removeItem(TOKEN_NAME);
+
 export const getLocalStorageRefreshToken = () =>
   localStorage.getItem(REFRESH_TOKEN_NAME);
 
 export const setLocalStorageRefreshToken = (refreshToken: string) =>
   localStorage.setItem(REFRESH_TOKEN_NAME, refreshToken);
+
+  export const removeLocalStorageRefreshToken = () =>
+  localStorage.removeItem(REFRESH_TOKEN_NAME);
