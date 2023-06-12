@@ -70,16 +70,20 @@ export const QuestionComponent = ({ question, setQuestions, questions }: Questio
           </div>
           <hr />
           <div className="p-2 h-32">
-            <div>
-              <button type='button' className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={() => handleCreateChatGptAnswer(question.id)}>Gerar resposta</button>
-              {question.answer &&
+            {question.answer ?
+              <div>
+                {!question.answer.approved &&
+                  <button type='button' className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={() => handleCreateChatGptAnswer(question.id)}>Gerar resposta</button>}
                 <div className="mt-2">
                   <p>{question.answer.answer}</p>
                   {!question.answer.approved &&
                     <button type="button" className="bg-green-600 h-16 w-16 rounded-full float-right align-bottom mt-8" onClick={() => handleApproveMessage(question.id)}>👍</button>}
                 </div>
-              }
-            </div>
+              </div> :
+              <div>
+                <button type='button' className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={() => handleCreateChatGptAnswer(question.id)}>Gerar resposta</button>
+              </div>
+            }
           </div>
         </div>
       </div>
