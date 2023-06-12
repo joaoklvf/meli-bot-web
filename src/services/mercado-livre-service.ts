@@ -1,4 +1,5 @@
 import { api } from './api';
+import { Question } from '../interfaces/question';
 
 export const getToken = async (refreshToken: string) => {
   try {
@@ -20,9 +21,9 @@ export const requestSites = async () => {
   }
 }
 
-export const requestQuestions = async () => {
+export const requestQuestions = async (userId: number) => {
   try {
-    const { data } = await api.get('meli/questions');
+    const { data } = await api.get<Question[]>('meli/questions', { params: { userId } });
     return data;
   } catch (e: any) {
     throw new Error(e);

@@ -1,11 +1,37 @@
+import { Question } from "../../../../../interfaces/question";
+import { createChatGptAnswer, approveAnswer } from "../../../../../services/answer-service";
+
 interface QuestionComponentProps {
-  pergunta: any
+  question: Question
+  setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
+  questions: Question[];
 }
 
 const getDateString = (date: Date) => `${date.toLocaleDateString()} às ${date.toLocaleTimeString()}`
 
-export const QuestionComponent = ({ pergunta }: QuestionComponentProps) => {
-  const date = getDateString(new Date(pergunta.question.date_created));
+export const QuestionComponent = ({ question, setQuestions, questions }: QuestionComponentProps) => {
+  const date = getDateString(new Date(question.date_created));
+
+  const handleCreateChatGptAnswer = async (questionId: number) => {
+    const newAnswer = await createChatGptAnswer(questionId);
+    const currentQuestions = questions.map(x => {
+      if (x.id === question.id)
+        x.answer = newAnswer;
+      return x;
+    });
+    setQuestions(currentQuestions);
+  }
+
+  const handleApproveMessage = async (questionId: number) => {
+    const newAnswer = await approveAnswer(questionId);
+    const currentQuestions = questions.map(x => {
+      if (x.id === question.id)
+        x.answer = newAnswer;
+      return x;
+    });
+    setQuestions(currentQuestions);
+  }
+
   return (
     <div className="p-4 border border-slate-700 rounded-lg">
       <div className="flex flex-col border border-slate-700 rounded">
@@ -16,7 +42,7 @@ export const QuestionComponent = ({ pergunta }: QuestionComponentProps) => {
             </div>
             <hr />
             <div className="p-2">
-              <h5>{pergunta.productResponse.title}</h5>
+              <h5>{question.productResponse.title}</h5>
             </div>
           </div>
           <div className="col-span-2 border border-slate-700 ">
@@ -25,7 +51,7 @@ export const QuestionComponent = ({ pergunta }: QuestionComponentProps) => {
             </div>
             <hr />
             <div className="p-2">
-              <h5>{pergunta.text}</h5>
+              <h5>{question.text}</h5>
             </div>
           </div>
           <div className="border border-slate-700 ">
@@ -44,11 +70,19 @@ export const QuestionComponent = ({ pergunta }: QuestionComponentProps) => {
           </div>
           <hr />
           <div className="p-2 h-32">
-            <p>Mame minhas bolas amigo</p>
-            <button type="button" className="bg-green-600 h-16 w-16 rounded-full float-right align-bottom mt-8">👍</button>
+            <div>
+              <button type='button' className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={() => handleCreateChatGptAnswer(question.id)}>Gerar resposta</button>
+              {question.answer &&
+                <div className="mt-2">
+                  <p>{question.answer.answer}</p>
+                  {!question.answer.approved &&
+                    <button type="button" className="bg-green-600 h-16 w-16 rounded-full float-right align-bottom mt-8" onClick={() => handleApproveMessage(question.id)}>👍</button>}
+                </div>
+              }
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
