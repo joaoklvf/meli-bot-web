@@ -1,5 +1,5 @@
 export interface Answer {
-  answer: string;
+  text: string;
   approved: boolean;
   chatGptAnswer: boolean;
   id: string;

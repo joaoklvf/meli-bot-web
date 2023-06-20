@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { requestQuestions } from "../../../../services/mercado-livre-service";
 import { getLocalStorageToken } from "../../../../util/token";
 import { Question } from "../../../../interfaces/question";
+import { useLoading } from "../../../../contexts/loadingContext";
 
 const getQuestions = async (setQuestions: Dispatch<SetStateAction<Question[]>>) => {
   const localToken = getLocalStorageToken();
@@ -13,12 +14,17 @@ const getQuestions = async (setQuestions: Dispatch<SetStateAction<Question[]>>) 
 
 export const useQuestions = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
+  const { setIsLoading } = useLoading();
 
-  const handleGetOptions = () => {
-    getQuestions(setQuestions);
+  const handleGetOptions = async () => {
+    setIsLoading(true);
+    await getQuestions(setQuestions);
+    setIsLoading(false);
   }
 
-  useEffect(() => handleGetOptions, []);
+  useEffect(() => {
+    handleGetOptions();
+  }, []);
 
   return { questions, setQuestions, handleGetOptions };
 }

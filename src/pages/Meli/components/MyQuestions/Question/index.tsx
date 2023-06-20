@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useLoading } from "../../../../../contexts/loadingContext";
 import { Question } from "../../../../../interfaces/question";
-import { createChatGptAnswer, approveAnswer, createUserAnswer } from "../../../../../services/answer-service";
+import { createChatGptAnswer, approveAnswer } from "../../../../../services/answer-service";
 
 interface QuestionComponentProps {
   question: Question
@@ -11,11 +11,11 @@ interface QuestionComponentProps {
 const getDateString = (date: Date) => `${date.toLocaleDateString()} às ${date.toLocaleTimeString()}`
 
 export const QuestionComponent = ({ question, setQuestions, questions }: QuestionComponentProps) => {
+  const { setIsLoading } = useLoading();
   const date = getDateString(new Date(question.date_created));
 
-  const [userAnswer, setuserAnswer] = useState('');
-
   const handleCreateChatGptAnswer = async (questionId: number) => {
+    setIsLoading(true);
     const newAnswer = await createChatGptAnswer(questionId);
     const currentQuestions = questions.map(x => {
       if (x.id === question.id)
@@ -23,19 +23,11 @@ export const QuestionComponent = ({ question, setQuestions, questions }: Questio
       return x;
     });
     setQuestions(currentQuestions);
-  }
-
-  const handleCreateManualAnswer = async (questionId: number, answer: string) => {
-    const newAnswer = await createUserAnswer(questionId, answer);
-    const currentQuestions = questions.map(x => {
-      if (x.id === question.id)
-        x.answer = newAnswer;
-      return x;
-    });
-    setQuestions(currentQuestions);
+    setIsLoading(false);
   }
 
   const handleApproveMessage = async (questionId: number) => {
+    setIsLoading(true);
     const newAnswer = await approveAnswer(questionId);
     const currentQuestions = questions.map(x => {
       if (x.id === question.id)
@@ -43,8 +35,10 @@ export const QuestionComponent = ({ question, setQuestions, questions }: Questio
       return x;
     });
     setQuestions(currentQuestions);
+    setIsLoading(false);
   }
 
+  const questionApproved = question.answer.approved;
   return (
     <div className="p-4 border border-slate-700 rounded-lg">
       <div className="flex flex-col border border-slate-700 rounded">
@@ -77,49 +71,30 @@ export const QuestionComponent = ({ question, setQuestions, questions }: Questio
             </div>
           </div>
         </div>
-        <div className="border border-slate-700 py-2">
-          <div className="p-2">
-            Resposta chat-gpt:
+        <div className="border border-slate-700">
+          <div className="px-2 py-4">
+            <button type='button' className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={() => handleCreateChatGptAnswer(question.id)}>Gerar resposta</button>
           </div>
           <hr />
           <div className="p-2 h-32">
-            {question.answer && question.answer.chatGptAnswer ?
-              <div>
-                {!question.answer.approved &&
-                  <button type='button' className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={() => handleCreateChatGptAnswer(question.id)}>Gerar resposta</button>}
-                <div className="mt-2">
-                  <p>{question.answer.answer}</p>
-                  {!question.answer.approved &&
-                    <button type="button" className="bg-green-600 h-16 w-16 rounded-full float-right align-bottom mt-8" onClick={() => handleApproveMessage(question.id)}>👍</button>}
-                </div>
-              </div> :
-              <div>
-                <button type='button' className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={() => handleCreateChatGptAnswer(question.id)}>Gerar resposta</button>
-              </div>
-            }
+            <p>{question.answer.text}</p>
+            <div className="flex gap-2 justify-end">
+              <button hidden={questionApproved}
+                type="button"
+                className="bg-red-600 h-16 w-16 rounded-full float-right align-bottom mt-8"
+                onClick={() => handleApproveMessage(question.id)}>
+                👎
+              </button>
+              <button hidden={questionApproved}
+                type="button"
+                className="bg-green-600 h-16 w-16 rounded-full float-right align-bottom mt-8"
+                onClick={() => handleApproveMessage(question.id)}>
+                👍
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div className="border border-slate-700 py-2">
-          <div className="p-2">
-            Responder manualmente:
-          </div>
-          <hr />
-          <div className="p-2 h-32">
-            {question.answer && !question.answer.chatGptAnswer ?
-              <div>
-                <div className="mt-2">
-                  <p>{question.answer.answer}</p>
-                </div>
-              </div> :
-              <div>
-                <input type="text" className='bg-transparent border border-blue-500' value={userAnswer} onChange={e => setuserAnswer(e.target.value)}/>
-                <br/>
-                <button type='button' className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded' onClick={() => handleCreateManualAnswer(question.id, userAnswer)}>Enviar resposta</button>
-              </div>
-            }
-          </div>
-        </div>
     </div >
   );
 }
