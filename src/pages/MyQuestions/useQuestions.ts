@@ -22,8 +22,14 @@ export const useQuestions = ({ setQuestions }: UseQuestionsProps) => {
 
   const handleGetOptions = async () => {
     setIsLoading(true);
-    await getQuestions(setQuestions);
-    setIsLoading(false);
+    try {
+      await getQuestions(setQuestions);
+    } catch (error) {
+      console.log('error', error);
+    }
+    finally {
+      setIsLoading(false);
+    }
   }
 
   useEffect(() => {
