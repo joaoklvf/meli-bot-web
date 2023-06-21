@@ -1,17 +1,20 @@
-import { useLoading } from "../../../../../contexts/loadingContext";
-import { Question } from "../../../../../interfaces/question";
-import { createChatGptAnswer, approveAnswer } from "../../../../../services/answer-service";
+import { useLoading } from "../../../contexts/loadingContext";
+import { useQuestionContext } from "../../../contexts/questionContext";
+import { Question } from "../../../interfaces/question";
+import { approveAnswer, createChatGptAnswer } from "../../../services/answer-service";
+
 
 interface QuestionComponentProps {
-  question: Question
-  setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
-  questions: Question[];
+  question: Question;
+  handleOpenModal: () => void;
 }
 
 const getDateString = (date: Date) => `${date.toLocaleDateString()} às ${date.toLocaleTimeString()}`
 
-export const QuestionComponent = ({ question, setQuestions, questions }: QuestionComponentProps) => {
+export const QuestionComponent = ({ question, handleOpenModal }: QuestionComponentProps) => {
+  const { questions, setQuestions } = useQuestionContext();
   const { setIsLoading } = useLoading();
+  const { setQuestion } = useQuestionContext();
   const date = getDateString(new Date(question.date_created));
 
   const handleCreateChatGptAnswer = async (questionId: number) => {
@@ -36,6 +39,11 @@ export const QuestionComponent = ({ question, setQuestions, questions }: Questio
     });
     setQuestions(currentQuestions);
     setIsLoading(false);
+  }
+
+  const handleOnDislikeButtonClick = () => {
+    setQuestion(question)
+    handleOpenModal();
   }
 
   const questionApproved = question.answer.approved;
@@ -82,7 +90,7 @@ export const QuestionComponent = ({ question, setQuestions, questions }: Questio
               <button hidden={questionApproved}
                 type="button"
                 className="bg-red-600 h-16 w-16 rounded-full float-right align-bottom mt-8"
-                onClick={() => handleApproveMessage(question.id)}>
+                onClick={handleOnDislikeButtonClick}>
                 👎
               </button>
               <button hidden={questionApproved}

@@ -1,8 +1,13 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { requestQuestions } from "../../../../services/mercado-livre-service";
-import { getLocalStorageToken } from "../../../../util/token";
-import { Question } from "../../../../interfaces/question";
-import { useLoading } from "../../../../contexts/loadingContext";
+import { Dispatch, SetStateAction, useEffect } from "react"
+import { Question } from "../../interfaces/question";
+import { getLocalStorageToken } from "../../util/token";
+import { requestQuestions } from "../../services/mercado-livre-service";
+import { useLoading } from "../../contexts/loadingContext";
+
+
+interface UseQuestionsProps {
+  setQuestions: Dispatch<SetStateAction<Question[]>>;
+}
 
 const getQuestions = async (setQuestions: Dispatch<SetStateAction<Question[]>>) => {
   const localToken = getLocalStorageToken();
@@ -12,8 +17,7 @@ const getQuestions = async (setQuestions: Dispatch<SetStateAction<Question[]>>) 
   setQuestions(questions);
 }
 
-export const useQuestions = () => {
-  const [questions, setQuestions] = useState<Question[]>([]);
+export const useQuestions = ({ setQuestions }: UseQuestionsProps) => {
   const { setIsLoading } = useLoading();
 
   const handleGetOptions = async () => {
@@ -26,5 +30,5 @@ export const useQuestions = () => {
     handleGetOptions();
   }, []);
 
-  return { questions, setQuestions, handleGetOptions };
+  return { handleGetOptions };
 }
