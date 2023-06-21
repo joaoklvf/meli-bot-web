@@ -35,12 +35,12 @@ api.interceptors.response.use(
     if (error.response.status === 400 || error.response.data.status === '401') {
       const refreshToken = getLocalStorageRefreshToken();
       if (!refreshToken) {
-        window.location.href = 'http://localhost:5173';
+        window.location.href = import.meta.env.VITE_BASE_API_URL;
         return Promise.reject('undefined token');
       }
       const newToken = await getToken(refreshToken);
       if (newToken.error) {
-        window.location.href = 'http://localhost:5173';
+        window.location.href = import.meta.env.VITE_BASE_API_URL;
         return Promise.reject('invalid refresh_token');
       }
       setLocalStorageToken(JSON.stringify(newToken));
